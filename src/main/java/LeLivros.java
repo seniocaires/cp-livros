@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlDivision;
@@ -22,8 +23,8 @@ public class LeLivros {
 
   public static void main(String[] args) {
 
-    WebClient webClientPaginaListagem = new WebClient();
-    WebClient webClientPaginaLivro = new WebClient();
+    WebClient webClientPaginaListagem = novoWebClient();
+    WebClient webClientPaginaLivro = novoWebClient();
     HtmlPage paginaListagem;
     HtmlPage paginaLivro;
     HtmlDivision links;
@@ -83,6 +84,19 @@ public class LeLivros {
     } catch (IOException e) {
       Logger.getLogger(LeLivros.class.getName()).log(Level.SEVERE, e.getMessage(), e);
     }
+  }
+
+  private static WebClient novoWebClient() {
+    WebClient retorno = new WebClient(BrowserVersion.CHROME);
+    retorno.getOptions().setThrowExceptionOnScriptError(false);
+    retorno.getOptions().setThrowExceptionOnFailingStatusCode(false);
+    retorno.getOptions().setCssEnabled(false);
+    retorno.getOptions().setDoNotTrackEnabled(true);
+    retorno.getOptions().setGeolocationEnabled(false);
+    retorno.getOptions().setJavaScriptEnabled(false);
+    retorno.getOptions().setPopupBlockerEnabled(true);
+    retorno.getOptions().setPrintContentOnFailingStatusCode(false);
+    return retorno;
   }
 
 }
