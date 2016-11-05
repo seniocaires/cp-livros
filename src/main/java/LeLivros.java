@@ -67,11 +67,11 @@ public class LeLivros {
   }
 
   private static void download(String nomeArquivo, HtmlElement link) {
-    File arquivo = new File(DIRETORIO_SALVAR_LIVROS + "pacote2\\" + nomeArquivo);
+    File arquivo = new File(DIRETORIO_SALVAR_LIVROS + "pacote3\\" + nomeArquivo);
     InputStream inputStream;
     OutputStream outputStream;
     try {
-      if (!arquivo.exists() && !(new File(DIRETORIO_SALVAR_LIVROS + "pacote1\\" + nomeArquivo)).exists()) {
+      if (!arquivo.exists() && !(new File(DIRETORIO_SALVAR_LIVROS + "pacote1\\" + nomeArquivo)).exists() && !(new File(DIRETORIO_SALVAR_LIVROS + "pacote2\\" + nomeArquivo)).exists()) {
         Logger.getLogger(LeLivros.class.getName()).log(Level.INFO, "Salvando livro " + nomeArquivo);
 
         inputStream = link.click().getWebResponse().getContentAsStream();
