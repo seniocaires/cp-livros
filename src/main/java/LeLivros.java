@@ -38,6 +38,7 @@ public class LeLivros {
       try {
 
         paginaListagem = webClientPaginaListagem.getPage("http://lelivros.me/book/page/" + indicePagina);
+        Logger.getLogger(LeLivros.class.getName()).log(Level.INFO, "Acessando http://lelivros.me/book/page/" + indicePagina);
 
         HtmlUnorderedList lista = (HtmlUnorderedList) paginaListagem.getFirstByXPath("//ul[@class='products']");
         for (HtmlElement itemLista : lista.getElementsByTagName("li")) {
@@ -47,7 +48,7 @@ public class LeLivros {
 //            linkEPUB = links.getElementsByTagName("a").get(0);
 //            linkMOBI = links.getElementsByTagName("a").get(1);
             linkPDF = links.getElementsByTagName("a").get(2);
-            nomeLivro = paginaLivro.getElementsByTagName("h1").get(0).getTextContent().replaceAll(":", "").replaceAll("\\?", "");
+            nomeLivro = paginaLivro.getElementsByTagName("h1").get(0).getTextContent().replaceAll(":", "").replaceAll("\\?", "").replaceAll("/", "").replaceAll("\\\\", "");
 
             download(nomeLivro + ".pdf", linkPDF);
           } catch (IndexOutOfBoundsException e) {
@@ -66,11 +67,11 @@ public class LeLivros {
   }
 
   private static void download(String nomeArquivo, HtmlElement link) {
-    File arquivo = new File(DIRETORIO_SALVAR_LIVROS + nomeArquivo);
+    File arquivo = new File(DIRETORIO_SALVAR_LIVROS + "pacote2\\" + nomeArquivo);
     InputStream inputStream;
     OutputStream outputStream;
     try {
-      if (!arquivo.exists()) {
+      if (!arquivo.exists() && !(new File(DIRETORIO_SALVAR_LIVROS + "pacote1\\" + nomeArquivo)).exists()) {
         Logger.getLogger(LeLivros.class.getName()).log(Level.INFO, "Salvando livro " + nomeArquivo);
 
         inputStream = link.click().getWebResponse().getContentAsStream();
