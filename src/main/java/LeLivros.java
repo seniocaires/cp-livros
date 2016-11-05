@@ -31,7 +31,7 @@ public class LeLivros {
     HtmlElement linkEPUB;
     HtmlElement linkMOBI;
     HtmlElement linkPDF;
-    String nomeLivro;
+    String nomeLivro = "";
 
     for (int indicePagina = NUMERO_PAGINA_INICIAL; indicePagina <= NUMERO_PAGINA_FINAL; indicePagina++) {
 
@@ -41,14 +41,18 @@ public class LeLivros {
 
         HtmlUnorderedList lista = (HtmlUnorderedList) paginaListagem.getFirstByXPath("//ul[@class='products']");
         for (HtmlElement itemLista : lista.getElementsByTagName("li")) {
-          paginaLivro = webClientPaginaLivro.getPage(itemLista.getElementsByTagName("a").get(0).getAttribute("href"));
-          links = (HtmlDivision) paginaLivro.getByXPath("//div[@class='links-download']").get(0);
-          linkEPUB = links.getElementsByTagName("a").get(0);
-          linkMOBI = links.getElementsByTagName("a").get(1);
-          linkPDF = links.getElementsByTagName("a").get(2);
-          nomeLivro = paginaLivro.getElementsByTagName("h1").get(0).getTextContent().replaceAll(":", "").replaceAll("\\?", "");
+          try {
+            paginaLivro = webClientPaginaLivro.getPage(itemLista.getElementsByTagName("a").get(0).getAttribute("href"));
+            links = (HtmlDivision) paginaLivro.getByXPath("//div[@class='links-download']").get(0);
+//            linkEPUB = links.getElementsByTagName("a").get(0);
+//            linkMOBI = links.getElementsByTagName("a").get(1);
+            linkPDF = links.getElementsByTagName("a").get(2);
+            nomeLivro = paginaLivro.getElementsByTagName("h1").get(0).getTextContent().replaceAll(":", "").replaceAll("\\?", "");
 
-          download(nomeLivro + ".pdf", linkPDF);
+            download(nomeLivro + ".pdf", linkPDF);
+          } catch (IndexOutOfBoundsException e) {
+            Logger.getLogger(LeLivros.class.getName()).log(Level.SEVERE, "Erro na página do livro " + itemLista.getElementsByTagName("a").get(0).getAttribute("href") + e.getMessage(), e);
+          }
         }
 
       } catch (FailingHttpStatusCodeException e) {
@@ -56,8 +60,6 @@ public class LeLivros {
       } catch (MalformedURLException e) {
         Logger.getLogger(LeLivros.class.getName()).log(Level.SEVERE, e.getMessage(), e);
       } catch (IOException e) {
-        Logger.getLogger(LeLivros.class.getName()).log(Level.SEVERE, e.getMessage(), e);
-      } catch (IndexOutOfBoundsException e) {
         Logger.getLogger(LeLivros.class.getName()).log(Level.SEVERE, e.getMessage(), e);
       }
     }
