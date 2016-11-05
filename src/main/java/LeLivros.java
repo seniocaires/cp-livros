@@ -46,7 +46,7 @@ public class LeLivros {
           linkEPUB = links.getElementsByTagName("a").get(0);
           linkMOBI = links.getElementsByTagName("a").get(1);
           linkPDF = links.getElementsByTagName("a").get(2);
-          nomeLivro = paginaLivro.getElementsByTagName("h1").get(0).getTextContent().replaceAll(":", "");
+          nomeLivro = paginaLivro.getElementsByTagName("h1").get(0).getTextContent().replaceAll(":", "").replaceAll("\\?", "");
 
           download(nomeLivro + ".pdf", linkPDF);
         }
@@ -56,6 +56,8 @@ public class LeLivros {
       } catch (MalformedURLException e) {
         Logger.getLogger(LeLivros.class.getName()).log(Level.SEVERE, e.getMessage(), e);
       } catch (IOException e) {
+        Logger.getLogger(LeLivros.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+      } catch (IndexOutOfBoundsException e) {
         Logger.getLogger(LeLivros.class.getName()).log(Level.SEVERE, e.getMessage(), e);
       }
     }
@@ -98,5 +100,4 @@ public class LeLivros {
     retorno.getOptions().setPrintContentOnFailingStatusCode(false);
     return retorno;
   }
-
 }
