@@ -1,0 +1,7 @@
+{
+	"ativo": "false",
+	"host": "127.0.0.1",
+	"porta": "8080",
+	"login": "login-usuario-proxy",
+	"senha": "senha-usuario-proxy"
+}
