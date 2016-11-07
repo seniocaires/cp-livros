@@ -1,12 +1,12 @@
 {
-  "linkSite" : "http://lelivros.top/",
-  "diretorioDownload" : "C:\\Users\\UsrAdm\\Downloads\\tmp\\lelivros",
-  "downloadCapas" : "true",
-  "downloadPDF" : "true",
-  "downloadMOBI" : "true",
-  "downloadEPUB" : "true",
-  "subDiretorioCapas" : "capas",
-  "subDiretorioPDF" : "pdf",
-  "subDiretorioEPUB" : "epub",
-  "subDiretorioMOBI" : "mobi"
+  "linkSite": "http://lelivros.top/",
+  "diretorioDownload": "C:\\Users\\UsrAdm\\Downloads\\tmp\\lelivros",
+  "downloadCapas": "true",
+  "downloadPDF": "true",
+  "downloadMOBI": "true",
+  "downloadEPUB": "true",
+  "subDiretorioCapas": "capas",
+  "subDiretorioPDF": "pdf",
+  "subDiretorioEPUB": "epub",
+  "subDiretorioMOBI": "mobi"
 }

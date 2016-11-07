@@ -44,13 +44,14 @@ public class Main {
     HtmlUnorderedList listaCategorias;
     String categoria;
     String linkCategoria;
-    int indicePagina = 1;
+    int indicePagina;
 
     try {
       paginaInicial = webClientPaginaInicial.getPage(Util.getConfiguracao().getLinkSite());
       listaCategorias = (HtmlUnorderedList) paginaInicial.getFirstByXPath("//ul[@class='product-categories']");
       for (HtmlElement itemCategoria : listaCategorias.getElementsByTagName("li")) {
 
+        indicePagina = 1;
         linkCategoria = itemCategoria.getElementsByTagName("a").get(0).getAttribute("href");
         categoria = itemCategoria.getElementsByTagName("a").get(0).getTextContent().replaceAll("\\.", "");
 
@@ -157,6 +158,7 @@ public class Main {
 
     try {
       paginaListagem.getFirstByXPath("//a[@class='nextpostslink']");
+      retorno = true;
     } catch (Exception e) {
       Logger.getLogger(Main.class.getName()).log(Level.INFO, "Fim. Número da última página de listagem acessada = " + numeroUltimaPaginaAcessada);
     }
