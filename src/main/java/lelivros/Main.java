@@ -154,16 +154,7 @@ public class Main {
   }
 
   private static boolean existeProximaPagina(HtmlPage paginaListagem, int numeroUltimaPaginaAcessada) {
-    boolean retorno = false;
-
-    try {
-      paginaListagem.getFirstByXPath("//a[@class='nextpostslink']");
-      retorno = true;
-    } catch (Exception e) {
-      Logger.getLogger(Main.class.getName()).log(Level.INFO, "Fim. Número da última página de listagem acessada = " + numeroUltimaPaginaAcessada);
-    }
-
-    return retorno;
+    return paginaListagem.getFirstByXPath("//a[@class='nextpostslink']") != null;
   }
 
   private static void inicializarDiretorios(String categoria) {
@@ -171,16 +162,16 @@ public class Main {
     new File(Util.getConfiguracao().getDiretorioDownload(), categoria).mkdirs();
 
     if (Util.getConfiguracao().getDownloadCapas()) {
-      new File(Util.getConfiguracao().getDiretorioDownload() + File.separator + categoria, "capas").mkdirs();
+      new File(Util.getConfiguracao().getDiretorioDownload() + File.separator + categoria, Util.getConfiguracao().getSubDiretorioCapas()).mkdirs();
     }
     if (Util.getConfiguracao().getDownloadEPUB()) {
-      new File(Util.getConfiguracao().getDiretorioDownload() + File.separator + categoria, "epub").mkdirs();
+      new File(Util.getConfiguracao().getDiretorioDownload() + File.separator + categoria, Util.getConfiguracao().getSubDiretorioEPUB()).mkdirs();
     }
     if (Util.getConfiguracao().getDownloadPDF()) {
-      new File(Util.getConfiguracao().getDiretorioDownload() + File.separator + categoria, "pdf").mkdirs();
+      new File(Util.getConfiguracao().getDiretorioDownload() + File.separator + categoria, Util.getConfiguracao().getSubDiretorioPDF()).mkdirs();
     }
     if (Util.getConfiguracao().getDownloadMOBI()) {
-      new File(Util.getConfiguracao().getDiretorioDownload() + File.separator + categoria, "mobi").mkdirs();
+      new File(Util.getConfiguracao().getDiretorioDownload() + File.separator + categoria, Util.getConfiguracao().getSubDiretorioMOBI()).mkdirs();
     }
   }
 }
