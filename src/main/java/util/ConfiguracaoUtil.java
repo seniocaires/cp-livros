@@ -11,8 +11,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
-import lelivros.Main;
-
 public class ConfiguracaoUtil {
 
   private static final Type PROXY_TYPE = new TypeToken<Proxy>() {
@@ -30,7 +28,7 @@ public class ConfiguracaoUtil {
         jsonReader = new JsonReader(new FileReader("configuracao" + File.separator + "proxy.json"));
         proxy = gson.fromJson(jsonReader, PROXY_TYPE);
       } catch (FileNotFoundException e) {
-        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+        Logger.getLogger(ConfiguracaoUtil.class.getName()).log(Level.SEVERE, e.getMessage(), e);
       }
     }
 

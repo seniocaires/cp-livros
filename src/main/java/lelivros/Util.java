@@ -30,7 +30,7 @@ public class Util extends ConfiguracaoUtil {
         jsonReader = new JsonReader(new FileReader("configuracao" + File.separator + "lelivros.json"));
         configuracao = gson.fromJson(jsonReader, CONFIGURACAO_TYPE);
       } catch (FileNotFoundException e) {
-        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+        Logger.getLogger(Util.class.getName()).log(Level.SEVERE, e.getMessage(), e);
       }
     }
 
