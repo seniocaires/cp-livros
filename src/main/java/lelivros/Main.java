@@ -96,7 +96,7 @@ public class Main {
           }
 
           indicePagina++;
-        } while (existeProximaPagina(paginaListagem, indicePagina - 1));
+        } while (existeProximaPagina(paginaListagem));
 
       }
     } catch (FailingHttpStatusCodeException e) {
@@ -153,7 +153,7 @@ public class Main {
     return reader.read(minIndex);
   }
 
-  private static boolean existeProximaPagina(HtmlPage paginaListagem, int numeroUltimaPaginaAcessada) {
+  private static boolean existeProximaPagina(HtmlPage paginaListagem) {
     return paginaListagem.getFirstByXPath("//a[@class='nextpostslink']") != null;
   }
 
