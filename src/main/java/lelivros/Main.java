@@ -67,7 +67,7 @@ public class Main {
             try {
               paginaLivro = webClientPaginaLivro.getPage(itemListaLivro.getElementsByTagName("a").get(0).getAttribute("href"));
 
-              nomeLivro = paginaLivro.getElementsByTagName("h1").get(0).getTextContent().replaceAll(":", "").replaceAll("\\?", "").replaceAll("/", "").replaceAll("\\\\", "");
+              nomeLivro = paginaLivro.getElementsByTagName("h1").get(0).getTextContent().replaceAll(":", "").replaceAll("\\?", "").replaceAll("/", "").replaceAll("\\\\", "").replaceAll("#", "").replaceAll("$", "").replaceAll("\\*", "");
 
               links = (HtmlDivision) paginaLivro.getByXPath("//div[@class='images']").get(0);
               image = (HtmlImage) links.getElementsByTagName("img").get(0);
