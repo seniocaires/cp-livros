@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -110,7 +111,19 @@ public class Main {
     if (!arquivo.exists()) {
       Logger.getLogger(Main.class.getName()).log(Level.INFO, "Salvando capa " + nomeLivro);
 
-      image.saveAs(arquivo);
+      URL url = new URL(image.getAttribute("src"));
+      InputStream is = url.openStream();
+      OutputStream os = new FileOutputStream(arquivo);
+
+      byte[] b = new byte[2048];
+      int length;
+
+      while ((length = is.read(b)) != -1) {
+        os.write(b, 0, length);
+      }
+
+      is.close();
+      os.close();
 
       Logger.getLogger(Main.class.getName()).log(Level.INFO, "Capa salva.");
     }
