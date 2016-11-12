@@ -1,6 +1,5 @@
 package lelivros;
 
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,9 +8,6 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -35,7 +31,6 @@ public class Main {
     HtmlPage paginaLivro;
     HtmlDivision links;
     HtmlImage image;
-    RenderedImage buf;
     HtmlElement linkEPUB;
     HtmlElement linkMOBI;
     HtmlElement linkPDF;
@@ -71,7 +66,6 @@ public class Main {
 
               links = (HtmlDivision) paginaLivro.getByXPath("//div[@class='images']").get(0);
               image = (HtmlImage) links.getElementsByTagName("img").get(0);
-              buf = getImage(image);
 
               links = (HtmlDivision) paginaLivro.getByXPath("//div[@class='links-download']").get(0);
               linkEPUB = links.getElementsByTagName("a").get(0);
@@ -79,7 +73,7 @@ public class Main {
               linkPDF = links.getElementsByTagName("a").get(2);
 
               if (Util.getConfiguracao().getDownloadCapas()) {
-                downloadImage(image, nomeLivro, buf, categoria);
+                downloadImage(image, nomeLivro, categoria);
               }
               if (Util.getConfiguracao().getDownloadEPUB()) {
                 downloadLivro(nomeLivro + ".epub", linkEPUB, Util.getConfiguracao().getSubDiretorioEPUB(), categoria);
@@ -108,7 +102,7 @@ public class Main {
     }
   }
 
-  private static void downloadImage(HtmlImage image, String nomeLivro, RenderedImage buf, String categoria) throws IOException {
+  private static void downloadImage(HtmlImage image, String nomeLivro, String categoria) throws IOException {
     String extensao = image.getSrcAttribute().substring(image.getSrcAttribute().length() - 3);
 
     File arquivo = new File(Util.getConfiguracao().getDiretorioDownload() + File.separator + categoria + File.separator + Util.getConfiguracao().getSubDiretorioCapas() + File.separator + nomeLivro + "." + extensao);
@@ -116,7 +110,7 @@ public class Main {
     if (!arquivo.exists()) {
       Logger.getLogger(Main.class.getName()).log(Level.INFO, "Salvando capa " + nomeLivro);
 
-      ImageIO.write(buf, extensao, arquivo);
+      image.saveAs(arquivo);
 
       Logger.getLogger(Main.class.getName()).log(Level.INFO, "Capa salva.");
     }
@@ -145,12 +139,6 @@ public class Main {
     } catch (IOException e) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, e.getMessage(), e);
     }
-  }
-
-  private static RenderedImage getImage(HtmlImage image) throws IOException {
-    ImageReader reader = image.getImageReader();
-    int minIndex = reader.getMinIndex();
-    return reader.read(minIndex);
   }
 
   private static boolean existeProximaPagina(HtmlPage paginaListagem) {
