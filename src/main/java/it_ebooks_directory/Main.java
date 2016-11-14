@@ -57,8 +57,8 @@ public class Main {
 
             inicializarDiretorios();
 
-            downloadCapa(image, nomeLivro);
             downloadLivro((HtmlElement) paginaLivro.getElementById("download"), nomeLivro);
+            downloadCapa(image, nomeLivro);
           } catch (IndexOutOfBoundsException e) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Erro na página do livro " + itemListaLivro.getElementsByTagName("a").get(0).getAttribute("href") + e.getMessage(), e);
           }
@@ -94,6 +94,9 @@ public class Main {
         while ((read = inputStream.read(bytes)) != -1) {
           if (primeiroStream && (new String(bytes)).contains("DOCTYPE html")) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Limite de download diário do site foi atingido! ");
+            outputStream.close();
+            inputStream.close();
+            arquivo.delete();
             System.exit(0);
           }
           outputStream.write(bytes, 0, read);
