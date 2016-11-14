@@ -90,7 +90,12 @@ public class Main {
         outputStream = new FileOutputStream(arquivo);
         byte[] bytes = new byte[1024];
         int read;
+        boolean primeiroStream = true;
         while ((read = inputStream.read(bytes)) != -1) {
+          if (primeiroStream && (new String(bytes)).contains("DOCTYPE html")) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Limite de download diário do site foi atingido! ");
+            System.exit(0);
+          }
           outputStream.write(bytes, 0, read);
         }
         outputStream.close();
