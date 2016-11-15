@@ -1,0 +1,8 @@
+{
+  "linkSite": "http://www.allitebooks.com/",
+  "diretorioDownload": "C:\\Users\\UsrAdm\\Downloads\\allitebooks",
+  "downloadCapas": "true",
+  "downloadPDF": "true",
+  "subDiretorioCapas": "capas",
+  "subDiretorioPDF": "pdf"
+}

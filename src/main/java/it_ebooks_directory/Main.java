@@ -112,7 +112,7 @@ public class Main {
   }
 
   private static void downloadCapa(HtmlImage imagem, String nomeLivro) throws IOException {
-    String extensao = imagem.getSrcAttribute().substring(imagem.getSrcAttribute().length() - 3);
+    String extensao = imagem.getSrcAttribute().substring(imagem.getSrcAttribute().lastIndexOf(".") + 1);
 
     File arquivo = new File(diretorioPacoteAtual + File.separator + nomeLivro + "." + extensao);
 

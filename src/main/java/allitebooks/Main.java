@@ -1,4 +1,4 @@
-package lelivros;
+package allitebooks;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,12 +16,14 @@ import com.gargoylesoftware.htmlunit.html.HtmlDivision;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlImage;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 import com.gargoylesoftware.htmlunit.html.HtmlUnorderedList;
 
 import util.HtmlUnitUtil;
 
 public class Main {
 
+  @SuppressWarnings("unchecked")
   public static void main(String[] args) {
 
     WebClient webClientPaginaInicial = HtmlUnitUtil.novoWebClient();
@@ -30,13 +32,9 @@ public class Main {
     HtmlPage paginaInicial = null;
     HtmlPage paginaListagem = null;
     HtmlPage paginaLivro;
-    HtmlDivision links;
     HtmlImage image;
-    HtmlElement linkEPUB;
-    HtmlElement linkMOBI;
     HtmlElement linkPDF;
     String nomeLivro = "";
-    HtmlUnorderedList listaLivros;
     HtmlUnorderedList listaCategorias;
     String categoria;
     String linkCategoria;
@@ -44,43 +42,32 @@ public class Main {
 
     try {
       paginaInicial = webClientPaginaInicial.getPage(Util.getConfiguracao().getLinkSite());
-      listaCategorias = (HtmlUnorderedList) paginaInicial.getFirstByXPath("//ul[@class='product-categories']");
+      listaCategorias = (HtmlUnorderedList) paginaInicial.getElementById("menu-categories");
       for (HtmlElement itemCategoria : listaCategorias.getElementsByTagName("li")) {
 
         indicePagina = 1;
         linkCategoria = itemCategoria.getElementsByTagName("a").get(0).getAttribute("href");
-        categoria = itemCategoria.getElementsByTagName("a").get(0).getTextContent().replaceAll("\\.", "");
+        categoria = itemCategoria.getElementsByTagName("a").get(0).getTextContent();
 
         inicializarDiretorios(categoria);
 
         do {
 
-          paginaListagem = webClientPaginaListagem.getPage(Util.getConfiguracao().getLinkSite() + linkCategoria + "page/" + indicePagina);
-          Logger.getLogger(Main.class.getName()).log(Level.INFO, "Acessando " + Util.getConfiguracao().getLinkSite() + linkCategoria + "page/" + indicePagina);
+          paginaListagem = webClientPaginaListagem.getPage(linkCategoria + "page/" + indicePagina);
+          Logger.getLogger(Main.class.getName()).log(Level.INFO, "Acessando " + linkCategoria + "page/" + indicePagina);
 
-          listaLivros = (HtmlUnorderedList) paginaListagem.getFirstByXPath("//ul[@class='products']");
-          for (HtmlElement itemListaLivro : listaLivros.getElementsByTagName("li")) {
+          for (HtmlElement itemListaLivro : (List<HtmlElement>) paginaListagem.getByXPath("//div[@class='entry-thumbnail hover-thumb']")) {
             try {
               paginaLivro = webClientPaginaLivro.getPage(itemListaLivro.getElementsByTagName("a").get(0).getAttribute("href"));
 
               nomeLivro = paginaLivro.getElementsByTagName("h1").get(0).getTextContent().replaceAll(":", "").replaceAll("\\?", "").replaceAll("/", "").replaceAll("\\\\", "").replaceAll("#", "").replaceAll("$", "").replaceAll("\\*", "");
 
-              links = (HtmlDivision) paginaLivro.getByXPath("//div[@class='images']").get(0);
-              image = (HtmlImage) links.getElementsByTagName("img").get(0);
+              image = (HtmlImage) ((HtmlDivision) paginaLivro.getByXPath("//div[@class='entry-body-thumbnail hover-thumb']").get(0)).getElementsByTagName("img").get(0);
 
-              links = (HtmlDivision) paginaLivro.getByXPath("//div[@class='links-download']").get(0);
-              linkEPUB = links.getElementsByTagName("a").get(0);
-              linkMOBI = links.getElementsByTagName("a").get(1);
-              linkPDF = links.getElementsByTagName("a").get(2);
+              linkPDF = ((HtmlSpan) paginaLivro.getByXPath("//span[@class='download-links']").get(0)).getElementsByTagName("a").get(0);
 
               if (Util.getConfiguracao().getDownloadCapas()) {
                 downloadImage(image, nomeLivro, categoria);
-              }
-              if (Util.getConfiguracao().getDownloadEPUB()) {
-                downloadLivro(nomeLivro + ".epub", linkEPUB, Util.getConfiguracao().getSubDiretorioEPUB(), categoria);
-              }
-              if (Util.getConfiguracao().getDownloadMOBI()) {
-                downloadLivro(nomeLivro + ".mobi", linkMOBI, Util.getConfiguracao().getSubDiretorioMOBI(), categoria);
               }
               if (Util.getConfiguracao().getDownloadPDF()) {
                 downloadLivro(nomeLivro + ".pdf", linkPDF, Util.getConfiguracao().getSubDiretorioPDF(), categoria);
@@ -91,7 +78,7 @@ public class Main {
           }
 
           indicePagina++;
-        } while (existeProximaPagina(paginaListagem));
+        } while (existeProximaPagina(paginaListagem, indicePagina - 1));
 
       }
     } catch (FailingHttpStatusCodeException e) {
@@ -111,19 +98,7 @@ public class Main {
     if (!arquivo.exists()) {
       Logger.getLogger(Main.class.getName()).log(Level.INFO, "Salvando capa " + nomeLivro);
 
-      URL url = new URL(image.getAttribute("src"));
-      InputStream is = url.openStream();
-      OutputStream os = new FileOutputStream(arquivo);
-
-      byte[] b = new byte[2048];
-      int length;
-
-      while ((length = is.read(b)) != -1) {
-        os.write(b, 0, length);
-      }
-
-      is.close();
-      os.close();
+      image.saveAs(arquivo);
 
       Logger.getLogger(Main.class.getName()).log(Level.INFO, "Capa salva.");
     }
@@ -154,8 +129,8 @@ public class Main {
     }
   }
 
-  private static boolean existeProximaPagina(HtmlPage paginaListagem) {
-    return paginaListagem.getFirstByXPath("//a[@class='nextpostslink']") != null;
+  private static boolean existeProximaPagina(HtmlPage paginaListagem, int indicePagina) {
+    return !(indicePagina + " / " + indicePagina + " Pages").equals(((HtmlElement) paginaListagem.getFirstByXPath("//span[@class='pages']")).getTextContent());
   }
 
   private static void inicializarDiretorios(String categoria) {
@@ -165,14 +140,8 @@ public class Main {
     if (Util.getConfiguracao().getDownloadCapas()) {
       new File(Util.getConfiguracao().getDiretorioDownload() + File.separator + categoria, Util.getConfiguracao().getSubDiretorioCapas()).mkdirs();
     }
-    if (Util.getConfiguracao().getDownloadEPUB()) {
-      new File(Util.getConfiguracao().getDiretorioDownload() + File.separator + categoria, Util.getConfiguracao().getSubDiretorioEPUB()).mkdirs();
-    }
     if (Util.getConfiguracao().getDownloadPDF()) {
       new File(Util.getConfiguracao().getDiretorioDownload() + File.separator + categoria, Util.getConfiguracao().getSubDiretorioPDF()).mkdirs();
-    }
-    if (Util.getConfiguracao().getDownloadMOBI()) {
-      new File(Util.getConfiguracao().getDiretorioDownload() + File.separator + categoria, Util.getConfiguracao().getSubDiretorioMOBI()).mkdirs();
     }
   }
 }
