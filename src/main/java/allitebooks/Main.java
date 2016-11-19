@@ -60,7 +60,7 @@ public class Main {
             try {
               paginaLivro = webClientPaginaLivro.getPage(itemListaLivro.getElementsByTagName("a").get(0).getAttribute("href"));
 
-              nomeLivro = paginaLivro.getElementsByTagName("h1").get(0).getTextContent().replaceAll(":", "").replaceAll("\\?", "").replaceAll("/", "").replaceAll("\\\\", "").replaceAll("#", "").replaceAll("$", "").replaceAll("\\*", "");
+              nomeLivro = paginaLivro.getElementsByTagName("h1").get(0).getTextContent().replaceAll(":", "").replaceAll("\\?", "").replaceAll("/", "").replaceAll("\\\\", "").replaceAll("#", "").replaceAll("$", "").replaceAll("\\*", "").replaceAll("|", "");
 
               image = (HtmlImage) ((HtmlDivision) paginaLivro.getByXPath("//div[@class='entry-body-thumbnail hover-thumb']").get(0)).getElementsByTagName("img").get(0);
 
